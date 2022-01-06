@@ -5,7 +5,12 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon script/serve.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "image": "echo gcr.io/`gcloud config get-value project`/webapp-mockup",
+    "build": "docker image build -t `npm run -s image` .",
+    "push": "docker image push `npm run -s image`",
+    "deploy": "gcloud run deploy webpack-mockup --allow-unauthenticated --image `npm run -s image` --region asia-northeast1 --platform managed",
+    "staging": "npm run build && npm run push && npm run deploy"
   },
   "keywords": [],
   "author": "",
