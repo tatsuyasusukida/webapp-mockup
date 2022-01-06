@@ -1,0 +1,32 @@
+extends ../layout/private
+
+block title
+  title Todoの削除｜ToDoリスト管理アプリ
+
+block breadcrumb
+  nav.mt-3(aria-label='パンくずリスト')
+    .container
+      ol.breadcrumb
+        li.breadcrumb-item
+          a(href='../../') ToDo
+        li.breadcrumb-item
+          a(href='../') 詳細
+        li.breadcrumb-item
+          a(href='./' aria-current='page') 削除
+
+block main
+  main
+    .container
+      h1 ToDoの削除
+      nav.mt-3(aria-label='メニュー')
+        .d-flex.flex-wrap.gap-2
+          a.btn.btn-outline-secondary(href='../') 戻る
+      form.mt-3(role='form')
+        p ToDoを削除してもよろしいですか?
+        .row
+          .col
+            .d-grid
+              a.btn.btn-secondary(href='../') キャンセル
+          .col
+            .d-grid
+              a.btn.btn-danger(href='../../delete/finish/') 削除
