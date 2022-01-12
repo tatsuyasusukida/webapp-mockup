@@ -29,7 +29,7 @@ html {
 }
 
 .sect1 {
-  page-break-before: always;
+  break-before: always;
 }
 
 h2 {
