@@ -1,0 +1,7 @@
+mixin input(name, label, type)
+  .form-group.mb-3
+    label.form-label(for=name) #{label}
+    input.form-control(type=type name=name id=name aria-required='true' v-model=`body.form.${name}` v-bind:class=`{'is-invalid': body.validation.${name}.ok === false}` v-bind:aria-invalid=`body.validation.${name}.ok === false` v-bind:aria-describedby=`body.validation.${name}.ok === false && '${name}Feedback'`)
+    p.invalid-feedback(id=`${name}Feedback`)
+      template(v-if=`body.validation.${name}.isNotEmpty === false`)
+        | #{label}をご入力ください

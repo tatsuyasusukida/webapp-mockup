@@ -1,5 +1,4 @@
 extends ../layout/private
-include ./mixin/form-content
 
 block title
   title Todoの登録｜ToDoリスト管理アプリ
@@ -14,13 +13,4 @@ block breadcrumb
           a(href='./' aria-current='page') 登録
 
 block main
-  main
-    .container
-      h1 ToDoの登録
-      nav.mt-3(aria-label='メニュー')
-        .d-flex.flex-wrap.gap-2
-          a.btn.btn-outline-secondary(href='../') 戻る
-      form.mt-3(role='form')
-        +form-content
-        .d-grid
-          a.btn.btn-primary(href='./finish/') 登録
+  #main

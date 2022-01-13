@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon script/serve.js",
+    "fixture": "node -r dotenv/config script/fixture.js",
+    "start": "nodemon -r dotenv/config script/serve.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "image": "echo gcr.io/`gcloud config get-value project`/webapp-mockup",
     "build": "docker image build -t `npm run -s image` .",
@@ -16,8 +17,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^11.0.0",
     "express": "^4.17.2",
     "morgan": "^1.10.0",
-    "pug": "^3.0.2"
+    "mysql2": "^2.3.3",
+    "nocache": "^3.0.1",
+    "proxy-middleware": "^0.15.0",
+    "pug": "^3.0.2",
+    "sequelize": "^6.13.0"
   }
 }
