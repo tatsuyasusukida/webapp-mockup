@@ -1,5 +1,4 @@
 extends ../layout/private
-include ./partial/form-content
 
 block title
   title Todoの登録｜ToDoリスト管理アプリ
@@ -21,6 +20,8 @@ block main
         .d-flex.flex-wrap.gap-2
           a.btn.btn-outline-secondary(href='../') 戻る
       form.mt-3(role='form')
-        +form-content
+        .form-group.mb-3
+          label.form-label(for='content') ToDoの内容
+          input.form-control(type='text' name='content' id='content')
         .d-grid
           a.btn.btn-primary(href='./finish/') 登録
