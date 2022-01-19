@@ -3,16 +3,10 @@ const morgan = require('morgan')
 const express = require('express')
 const nocache = require('nocache')
 const model = require('./model')
-const {Converter} = require('./lib/Converter')
-const {Initializer} = require('./lib/Initializer')
-const {Validator} = require('./lib/Validator')
 const {Op} = model.Sequelize
 
 class App {
   constructor () {
-    this.converter = new Converter()
-    this.initializer = new Initializer()
-    this.validator = new Validator()
     this.router = express()
 
     this.router.set('strict routing', true)
@@ -111,7 +105,29 @@ class App {
 
   async onRequestPrivateTodoView (req, res, next) {
     try {
-      res.locals.todo = await this.converter.convertTodo(req.locals.todo)
+      const {todo} = req.locals
+      const {date} = todo
+
+      const year = date.getFullYear()
+      const month = date.getMonth() + 1
+      const day = date.getDate()
+      const dayOfTheWeek = '日月火水木金土'[date.getDay()]
+      const hour = date.getHours()
+      const minute = date.getMinutes()
+      const second = date.getSeconds()
+      const dateText = [
+        `${year}年${month}月${day}日(${dayOfTheWeek}曜日)`,
+        `${hour}時${minute}分${second}秒`,
+      ].join(' ')
+
+      res.locals.todo = {
+        id: todo.id,
+        content: todo.content,
+        contentLines: todo.content.split('\n'),
+        date: todo.date,
+        dateText: dateText,
+      }
+
       next()
     } catch (err) {
       next(err)
@@ -120,8 +136,14 @@ class App {
 
   async onRequestApiV1PrivateTodoAddInitialize (req, res, next) {
     try {
-      const form = this.initializer.makeFormTodo()
-      const validation = this.validator.makeValidationTodo()
+      const form = {
+        content: '',
+      }
+
+      const validation = {
+        ok: null,
+        content: {ok: null, isNotEmpty: null},
+      }
 
       res.send({form, validation})
     } catch (err) {
@@ -131,7 +153,14 @@ class App {
 
   async onRequestApiV1PrivateTodoAddValidate (req, res, next) {
     try {
-      const validation = await this.validator.validateTodo(req)
+      const validation = {
+        ok: null,
+        content: {ok: null, isNotEmpty: null},
+      }
+
+      validation.content.isNotEmpty = req.body.form.content !== ''
+      validation.content.ok = validation.content.isNotEmpty
+      validation.ok = validation.content.ok
 
       res.send({validation})
     } catch (err) {
@@ -141,7 +170,14 @@ class App {
 
   async onRequestApiV1PrivateTodoAddSubmit (req, res, next) {
     try {
-      const validation = await this.validator.validateTodo(req)
+      const validation = {
+        ok: null,
+        content: {ok: null, isNotEmpty: null},
+      }
+
+      validation.content.isNotEmpty = req.body.form.content !== ''
+      validation.content.ok = validation.content.isNotEmpty
+      validation.ok = validation.content.ok
 
       if (!validation.ok) {
         res.status(400).end()
@@ -166,10 +202,14 @@ class App {
 
   async onRequestApiV1PrivateTodoEditInitialize (req, res, next) {
     try {
-      const form = this.initializer.makeFormTodo()
-      const validation = this.validator.makeValidationTodo()
+      const form = {
+        content: req.locals.todo.content,
+      }
 
-      form.content = req.locals.todo.content
+      const validation = {
+        ok: null,
+        content: {ok: null, isNotEmpty: null},
+      }
 
       res.send({form, validation})
     } catch (err) {
@@ -179,7 +219,14 @@ class App {
 
   async onRequestApiV1PrivateTodoEditValidate (req, res, next) {
     try {
-      const validation = await this.validator.validateTodo(req)
+      const validation = {
+        ok: null,
+        content: {ok: null, isNotEmpty: null},
+      }
+
+      validation.content.isNotEmpty = req.body.form.content !== ''
+      validation.content.ok = validation.content.isNotEmpty
+      validation.ok = validation.content.ok
 
       res.send({validation})
     } catch (err) {
@@ -189,7 +236,14 @@ class App {
 
   async onRequestApiV1PrivateTodoEditSubmit (req, res, next) {
     try {
-      const validation = await this.validator.validateTodo(req)
+      const validation = {
+        ok: null,
+        content: {ok: null, isNotEmpty: null},
+      }
+
+      validation.content.isNotEmpty = req.body.form.content !== ''
+      validation.content.ok = validation.content.isNotEmpty
+      validation.ok = validation.content.ok
 
       if (!validation.ok) {
         res.status(400).end()

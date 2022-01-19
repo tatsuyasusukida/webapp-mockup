@@ -8,8 +8,13 @@ class Main {
       await model.sequelize.sync({force: true})
 
       for (let i = 1; i <= 3; i += 1) {
+        const second = 1000
+        const minute = 60 * second
+        const hour = 60 * minute
+        const day = 24 * hour
+
         await model.todo.create({
-          date: new Date(Date.now() - (3 - i) * 24 * 60 * 60 * 1000),
+          date: new Date(Date.now() - (3 - i) * day),
           content: `ここにToDoの内容が入ります${i}`,
         })
       }
