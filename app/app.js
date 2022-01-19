@@ -2,7 +2,6 @@ const path = require('path')
 const morgan = require('morgan')
 const express = require('express')
 const nocache = require('nocache')
-const proxyMiddleware = require('proxy-middleware')
 const model = require('./model')
 const {Converter} = require('./lib/Converter')
 const {Initializer} = require('./lib/Initializer')
@@ -22,7 +21,6 @@ class App {
 
     this.router.use(this.onRequestInitialize.bind(this))
     this.router.use(morgan('dev'))
-    this.router.use('/static/', proxyMiddleware('http://127.0.0.1:8080'))
 
     this.router.get('/', (req, res) => res.redirect('./private/todo/'))
     this.router.get('/private/todo/', this.onRequestPrivateTodoIndex.bind(this))

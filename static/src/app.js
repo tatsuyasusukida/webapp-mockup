@@ -1,6 +1,6 @@
-import TodoPrivateAdd from './ui/todo/private-add.vue'
-import TodoPrivateEdit from './ui/todo/private-edit.vue'
-import TodoPrivateDelete from './ui/todo/private-delete.vue'
+import TodoPrivateAdd from './ui/todo/private-add'
+import TodoPrivateEdit from './ui/todo/private-edit'
+import TodoPrivateDelete from './ui/todo/private-delete'
 
 class Main {
   async run () {

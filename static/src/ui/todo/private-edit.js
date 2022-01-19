@@ -1,22 +1,20 @@
-import ViewMixin from './view'
-
 export default {
   data () {
     return {
-      method: null,
+      api: `/api/v1${window.location.pathname}`,
+      method: 'PUT',
+      body: null,
     }
   },
 
-  mixins: [ViewMixin],
-
   methods: {
-    makeOptions () {
-      return {
-        method: this.method,
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: JSON.stringify({form: this.body.form}),
+    async initialize () {
+      try {
+        const response = await fetch(this.api + 'initialize')
+        this.body = await response.json()
+      } catch (err) {
+        this.onError(err)
+        throw err
       }
     },
 
@@ -29,6 +27,7 @@ export default {
         this.body.validation = body.validation
 
         if (body.validation.ok) {
+          const options = this.makeOptions()
           const response = await fetch(this.api + 'submit', options)
           const body = await response.json()
 
@@ -37,12 +36,27 @@ export default {
             return
           }
         } else {
-          window.scrollTo(0, 0)
+          window.location.assign('#page-top')
         }
       } catch (err) {
         this.onError(err)
         throw err
       }
+    },
+
+    makeOptions () {
+      return {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify({form: this.body.form}),
+      }
+    },
+
+    onError (err) {
+      console.error(err.message)
+      console.debug(err.stack)
     },
   },
 }
