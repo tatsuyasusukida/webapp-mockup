@@ -13,13 +13,13 @@ class App {
     this.router.set('views', path.join(__dirname, 'view'))
     this.router.set('view engine', 'pug')
 
-    this.router.use(this.onRequestInitialize.bind(this))
     this.router.use(morgan('dev'))
 
     this.router.get('/', (req, res) => res.redirect('./private/todo/'))
     this.router.get('/private/todo/', this.onRequestPrivateTodoIndex.bind(this))
     this.router.get('/private/todo/', (req, res) => res.render('todo/private-index'))
     this.router.get('/private/todo/add/', (req, res) => res.render('todo/private-add'))
+    this.router.get('/private/todo/add/finish/', this.onRequestPrivateTodoAddFinish.bind(this))
     this.router.get('/private/todo/add/finish/', (req, res) => res.render('todo/private-add-finish'))
     this.router.use('/private/todo/:todoId([0-9]+)/', this.onRequestFindTodo.bind(this))
     this.router.get('/private/todo/:todoId([0-9]+)/', this.onRequestPrivateTodoView.bind(this))
@@ -54,20 +54,6 @@ class App {
     this.router(req, res)
   }
 
-  async onRequestInitialize (req, res, next) {
-    try {
-      req.locals = {}
-      res.locals.layout = {
-        env: process.env,
-        url: new URL(req.originalUrl, process.env.BASE_URL),
-      }
-
-      next()
-    } catch (err) {
-      next(err)
-    }
-  }
-
   async onRequestFindTodo (req, res, next) {
     try {
       const todo = await model.todo.findOne({
@@ -81,6 +67,7 @@ class App {
         return
       }
 
+      req.locals = req.locals || {}
       req.locals.todo = todo
 
       next()
@@ -96,6 +83,16 @@ class App {
       })
 
       res.locals.todos = todos
+
+      next()
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  async onRequestPrivateTodoAddFinish (req, res, next) {
+    try {
+      res.locals.id = req.query.id
 
       next()
     } catch (err) {
