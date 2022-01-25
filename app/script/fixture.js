@@ -5,7 +5,7 @@ const model = require('../model')
 class Main {
   async run () {
     try {
-      await model.sequelize.sync({force: true})
+      await model.sequelize.sync({force: true}) // <1>
 
       for (let i = 1; i <= 3; i += 1) {
         const second = 1000
@@ -16,10 +16,10 @@ class Main {
         await model.todo.create({
           date: new Date(Date.now() - (3 - i) * day),
           content: `ここにToDoの内容が入ります${i}`,
-        })
+        }) // <2>
       }
     } finally {
-      model.sequelize.close()
+      model.sequelize.close() // <3>
     }
   }
 }
