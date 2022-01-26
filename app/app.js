@@ -18,9 +18,10 @@ class App {
     this.router.get('/private/todo/', this.onRequestPrivateTodoIndex.bind(this)) // <3>
     this.router.get('/private/todo/', (req, res) => res.render('todo/private-index'))
     this.router.get('/private/todo/add/', (req, res) => res.render('todo/private-add'))
+    this.router.get('/private/todo/add/finish/', this.onRequestPrivateTodoAddFinish.bind(this)) // <4>
     this.router.get('/private/todo/add/finish/', (req, res) => res.render('todo/private-add-finish'))
-    this.router.use('/private/todo/:todoId([0-9]+)/', this.onRequestFindTodo.bind(this)) // <4>
-    this.router.get('/private/todo/:todoId([0-9]+)/', this.onRequestPrivateTodoView.bind(this)) // <5>
+    this.router.use('/private/todo/:todoId([0-9]+)/', this.onRequestFindTodo.bind(this)) // <5>
+    this.router.get('/private/todo/:todoId([0-9]+)/', this.onRequestPrivateTodoView.bind(this)) // <6>
     this.router.get('/private/todo/:todoId([0-9]+)/', (req, res) => res.render('todo/private-view'))
     this.router.get('/private/todo/:todoId([0-9]+)/edit/', (req, res) => res.render('todo/private-edit'))
     this.router.get('/private/todo/:todoId([0-9]+)/edit/finish/', (req, res) => res.render('todo/private-edit-finish'))
@@ -41,7 +42,7 @@ class App {
     this.router(req, res)
   }
 
-  async onRequestFindTodo (req, res, next) { // <6>
+  async onRequestFindTodo (req, res, next) { // <7>
     try {
       const todo = await model.todo.findOne({
         where: {
@@ -63,7 +64,7 @@ class App {
     }
   }
 
-  async onRequestPrivateTodoIndex (req, res, next) { // <7>
+  async onRequestPrivateTodoIndex (req, res, next) { // <8>
     try {
       const todos = await model.todo.findAll({
         order: [['date', 'desc']],
@@ -77,7 +78,17 @@ class App {
     }
   }
 
-  async onRequestPrivateTodoView (req, res, next) { // <8>
+  async onRequestPrivateTodoAddFinish (req, res, next) { // <9>
+    try {
+      res.locals.id = req.query.id
+
+      next()
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  async onRequestPrivateTodoView (req, res, next) { // <10>
     try {
       const {todo} = req.locals
       const {date} = todo
