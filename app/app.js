@@ -1,7 +1,7 @@
 const path = require('path')
 const morgan = require('morgan')
 const express = require('express')
-const nocache = require('nocache')
+const nocache = require('nocache') // <1>
 const model = require('./model')
 const {Op} = model.Sequelize
 
@@ -19,7 +19,7 @@ class App {
     this.router.get('/private/todo/', this.onRequestPrivateTodoIndex.bind(this))
     this.router.get('/private/todo/', (req, res) => res.render('todo/private-index'))
     this.router.get('/private/todo/add/', (req, res) => res.render('todo/private-add'))
-    this.router.get('/private/todo/add/finish/', this.onRequestPrivateTodoAddFinish.bind(this))
+    this.router.get('/private/todo/add/finish/', this.onRequestPrivateTodoAddFinish.bind(this)) // <2>
     this.router.get('/private/todo/add/finish/', (req, res) => res.render('todo/private-add-finish'))
     this.router.use('/private/todo/:todoId([0-9]+)/', this.onRequestFindTodo.bind(this))
     this.router.get('/private/todo/:todoId([0-9]+)/', this.onRequestPrivateTodoView.bind(this))
@@ -29,7 +29,7 @@ class App {
     this.router.get('/private/todo/:todoId([0-9]+)/delete/', (req, res) => res.render('todo/private-delete'))
     this.router.get('/private/todo/delete/finish/', (req, res) => res.render('todo/private-delete-finish'))
 
-    this.router.use('/api/v1/', nocache())
+    this.router.use('/api/v1/', nocache()) // <3>
     this.router.use('/api/v1/', express.json())
     this.router.get('/api/v1/private/todo/add/initialize', this.onRequestApiV1PrivateTodoAddInitialize.bind(this))
     this.router.post('/api/v1/private/todo/add/validate', this.onRequestApiV1PrivateTodoAddValidate.bind(this))
@@ -90,7 +90,7 @@ class App {
     }
   }
 
-  async onRequestPrivateTodoAddFinish (req, res, next) {
+  async onRequestPrivateTodoAddFinish (req, res, next) { // <4>
     try {
       res.locals.id = req.query.id
 
@@ -131,7 +131,7 @@ class App {
     }
   }
 
-  async onRequestApiV1PrivateTodoAddInitialize (req, res, next) {
+  async onRequestApiV1PrivateTodoAddInitialize (req, res, next) { // <5>
     try {
       const form = {
         content: '',
@@ -148,7 +148,7 @@ class App {
     }
   }
 
-  async onRequestApiV1PrivateTodoAddValidate (req, res, next) {
+  async onRequestApiV1PrivateTodoAddValidate (req, res, next) { // <6>
     try {
       const validation = {
         ok: null,
@@ -165,7 +165,7 @@ class App {
     }
   }
 
-  async onRequestApiV1PrivateTodoAddSubmit (req, res, next) {
+  async onRequestApiV1PrivateTodoAddSubmit (req, res, next) { // <7>
     try {
       const validation = {
         ok: null,
@@ -197,7 +197,7 @@ class App {
     }
   }
 
-  async onRequestApiV1PrivateTodoEditInitialize (req, res, next) {
+  async onRequestApiV1PrivateTodoEditInitialize (req, res, next) { // <8>
     try {
       const form = {
         content: req.locals.todo.content,
@@ -214,7 +214,7 @@ class App {
     }
   }
 
-  async onRequestApiV1PrivateTodoEditValidate (req, res, next) {
+  async onRequestApiV1PrivateTodoEditValidate (req, res, next) { // <9>
     try {
       const validation = {
         ok: null,
@@ -231,7 +231,7 @@ class App {
     }
   }
 
-  async onRequestApiV1PrivateTodoEditSubmit (req, res, next) {
+  async onRequestApiV1PrivateTodoEditSubmit (req, res, next) { // <10>
     try {
       const validation = {
         ok: null,
@@ -264,7 +264,7 @@ class App {
     }
   }
 
-  async onRequestApiV1PrivateTodoDeleteSubmit (req, res, next) {
+  async onRequestApiV1PrivateTodoDeleteSubmit (req, res, next) { // <11>
     try {
       await model.sequelize.transaction(async (transaction) => {
         await req.locals.todo.destroy({transaction})
