@@ -30,3 +30,35 @@ block main
           .col
             .d-grid
               button.btn.btn-danger(type='submit' v-on:click.prevent='onClickButtonSubmit') 削除
+
+append script
+  script(src='https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js')
+  script.
+    new Vue({
+      el: '#main',
+
+      data: {
+        api: `/api/v1${window.location.pathname}`,
+      },
+
+      methods: {
+        async onClickButtonSubmit () {
+          try {
+            const options = {
+              method: 'DELETE',
+            }
+
+            const response = await fetch(this.api + 'submit', options)
+            const body = await response.json()
+
+            if (body.ok) {
+              window.location.assign(body.redirect)
+              return
+            }
+          } catch (err) {
+            console.error(err.message)
+            console.debug(err.stack)
+          }
+        },
+      },
+    })

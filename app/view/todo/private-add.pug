@@ -13,7 +13,7 @@ block breadcrumb
           a(href='./' aria-current='page') 登録
 
 block main
-  main#main
+  main#main(v-if='body')
     .container
       h1 ToDoの登録
       nav.mt-3(aria-label='メニュー')
@@ -28,3 +28,67 @@ block main
               | ToDoの内容をご入力ください
         .d-grid
           button.btn.btn-primary(type='submit' v-on:click.prevent='onClickButtonSubmit') 登録
+
+append script
+  script(src='https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js')
+  script.
+    new Vue({
+      el: '#main',
+
+      data: {
+        api: `/api/v1${window.location.pathname}`,
+        body: null,
+      },
+
+      async created () {
+        try {
+          const response = await fetch(this.api + 'initialize')
+          this.body = await response.json()
+        } catch (err) {
+          console.error(err.message)
+          console.debug(err.stack)
+        }
+      },
+
+      methods: {
+        async onClickButtonSubmit () {
+          try {
+            const options = {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: JSON.stringify({form: this.body.form}),
+            }
+
+            const response = await fetch(this.api + 'validate', options)
+            const body = await response.json()
+
+            this.body.validation = body.validation
+
+            if (body.validation.ok) {
+              const options = {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify({form: this.body.form}),
+              }
+
+              const response = await fetch(this.api + 'submit', options)
+              const body = await response.json()
+
+              if (body.ok) {
+                window.location.assign(body.redirect)
+                return
+              }
+            } else {
+              window.location.assign('#page-top')
+            }
+          } catch (err) {
+            console.error(err.message)
+            console.debug(err.stack)
+          }
+        },
+      },
+    })
