@@ -15,7 +15,7 @@ block breadcrumb
           a(href='./' aria-current='page') 修正
 
 block main
-  main#main(v-if='body')
+  main(id='main' v-if='body')
     .container
       h1 ToDoの修正
       nav.mt-3(aria-label='メニュー')

@@ -13,7 +13,7 @@ block breadcrumb
           a(href='./' aria-current='page') 登録
 
 block main
-  main#main(v-if='body')
+  main(id='main' v-if='body')
     .container
       h1 ToDoの登録
       nav.mt-3(aria-label='メニュー')
@@ -36,14 +36,14 @@ append script
       el: '#main',
 
       data: {
-        api: `/api/v1${window.location.pathname}`,
+        api: `/api/v1${window.location.pathname}`, // <1>
         body: null,
       },
 
-      async created () {
+      async created () { // <2>
         try {
-          const response = await fetch(this.api + 'initialize')
-          this.body = await response.json()
+          const response = await fetch(this.api + 'initialize') // <3>
+          this.body = await response.json() 
         } catch (err) {
           console.error(err.message)
           console.debug(err.stack)
@@ -53,7 +53,7 @@ append script
       methods: {
         async onClickButtonSubmit () {
           try {
-            const options = {
+            const options = { // <4>
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
@@ -66,7 +66,7 @@ append script
 
             this.body.validation = body.validation
 
-            if (body.validation.ok) {
+            if (body.validation.ok) { // <5>
               const options = {
                 method: 'POST',
                 headers: {
@@ -79,11 +79,11 @@ append script
               const body = await response.json()
 
               if (body.ok) {
-                window.location.assign(body.redirect)
+                window.location.assign(body.redirect) // <6>
                 return
               }
             } else {
-              window.location.assign('#page-top')
+              window.location.assign('#page-top') // <7>
             }
           } catch (err) {
             console.error(err.message)
