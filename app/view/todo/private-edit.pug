@@ -24,8 +24,8 @@ block main
       form.mt-3(role='form')
         .form-group.mb-3
           label.form-label(for='content') ToDoの内容
-          input.form-control(type='text' name='content' id='content' aria-required='true' v-model='body.form.content' v-bind:class="{'is-invalid': body.validation.content.ok === false}" v-bind:aria-invalid="body.validation.content.ok === false" v-bind:aria-describedby="body.validation.content.ok === false && 'contentFeedback'")
-          p.invalid-feedback(id='contentFeedback')
+          input.form-control(type='text' name='content' id='content' aria-required='true' v-model='body.form.content' v-bind:class="{'is-invalid': body.validation.content.ok === false}")
+          p.invalid-feedback
             template(v-if='body.validation.content.isNotEmpty === false')
               | ToDoの内容をご入力ください
         .d-grid
